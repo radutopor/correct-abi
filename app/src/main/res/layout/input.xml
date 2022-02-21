@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/prompt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="G\ni\nv\ne\n \nt\no\n"
+            android:textColor="@color/dark_1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/show_input"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I   a m    "
+            android:textColor="@color/dark_1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/show_input"
+            app:layout_constraintRight_toLeftOf="@id/show_input"
+            app:layout_constraintTop_toTopOf="@id/show_input" />
+
+        <Button
+            android:id="@+id/show_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/accent_1"
+            android:padding="18dp"
+            android:text="radu"
+            android:textColor="@color/base_1"
+            android:textSize="19sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="\nh\na\ns\n \np\nh\no\nn"
+            android:textColor="@color/dark_1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/show_input" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="    i s   I"
+            android:textColor="@color/dark_1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/show_input"
+            app:layout_constraintLeft_toRightOf="@id/show_input"
+            app:layout_constraintTop_toTopOf="@id/show_input" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/input_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/box"
+            android:backgroundTint="@color/light_1"
+            android:digits="abcdefghijklmnopqrstuvwxyz"
+            android:gravity="center_horizontal"
+            android:maxLength="10"
+            android:minWidth="68dp"
+            android:paddingLeft="22dp"
+            android:paddingTop="18dp"
+            android:paddingRight="22dp"
+            android:paddingBottom="18dp"
+            android:textColor="@color/dark_1"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@id/submit"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="Tooth" />
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/accent_1"
+            android:paddingTop="21dp"
+            android:paddingBottom="21dp"
+            android:text="* head nod *"
+            android:textAllCaps="false"
+            android:textColor="@color/base_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/section_1"
+        android:padding="56dp"
+        android:visibility="gone" />
+</FrameLayout>

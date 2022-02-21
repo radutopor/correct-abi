@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="body_padding_h">22dp</dimen>
+
+    <dimen name="text_navbar">24sp</dimen>
+    <dimen name="text_body">20sp</dimen>
+    <dimen name="text_letter">24sp</dimen>
+</resources>
