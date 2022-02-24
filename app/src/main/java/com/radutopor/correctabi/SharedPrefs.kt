@@ -3,7 +3,7 @@ package com.radutopor.correctabi
 import android.content.Context
 import android.content.SharedPreferences.Editor
 
-class SharedPrefs(context: Context) {
+class SharedPrefs(private val context: Context) {
 
     private val sharedPrefs = context.getSharedPreferences(KEY_SHARED_PREFS, Context.MODE_PRIVATE)
 
@@ -19,11 +19,11 @@ class SharedPrefs(context: Context) {
 
     fun setPath(path: String?) = set { putString(KEY_PATH, path) }
 
-    fun wipeEverything() = set {
-        remove(KEY_LEVEL)
-        remove(KEY_COINS)
-        remove(KEY_PATH)
-    }
+    fun setGuessedWord(word: String) = set { putBoolean(word, true) }
+
+    fun isWordGuessed(word: String) = sharedPrefs.getBoolean(word, false)
+
+    fun wipeEverything() = context.deleteSharedPreferences(KEY_SHARED_PREFS)
 
     private fun set(setter: Editor.() -> Editor) = sharedPrefs.edit().setter().apply()
 

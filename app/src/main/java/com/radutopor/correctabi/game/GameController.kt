@@ -5,9 +5,9 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
-import com.radutopor.correctabi.GuessablesUtil.getRevealableDictionaryEntries
-import com.radutopor.correctabi.GuessablesUtil.isGuessable
-import com.radutopor.correctabi.GuessablesUtil.toWord
+import com.radutopor.correctabi.GuessablesUtil
+import com.radutopor.correctabi.GuessablesUtil.Companion.isGuessable
+import com.radutopor.correctabi.GuessablesUtil.Companion.toWord
 import com.radutopor.correctabi.SharedPrefs
 import com.radutopor.correctabi.layerRes
 import com.radutopor.correctabi.storage.Storage.getWordDao
@@ -20,6 +20,7 @@ class GameController(private val activity: GameActivity) {
 
     private val wordDao = getWordDao(activity)
     private val sharedPrefs = SharedPrefs(activity)
+    private val guessables = GuessablesUtil(sharedPrefs)
 
     suspend fun startGame(path: String, restorePath: String?) {
         val word = wordDao.getWord(path)
@@ -35,7 +36,7 @@ class GameController(private val activity: GameActivity) {
     }
 
     private suspend fun createChildWords(word: Word) {
-        val revealables = getRevealableDictionaryEntries(word.definition)
+        val revealables = guessables.getRevealableDictionaryEntries(word.definition)
         val maxRevealables = layerRes.maxOf { it.indicators.size }
         val toReveal = min(round(revealables.size * layerDifficulties[word.layer]).toInt(), maxRevealables)
         val freebies = revealables.shuffled().take(revealables.size - toReveal)
@@ -110,6 +111,8 @@ class GameController(private val activity: GameActivity) {
     }
 
     private fun processGameWon(word: Word) {
+        sharedPrefs.setGuessedWord(word.token)
+        sharedPrefs.setGuessedWord(word.stem)
         val letterAward = deleteWord(word)
         val coinsGained = word.value
         val gains = COINS_GAIN_STRING.format(coinsGained) + if (letterAward) "\n" + LETTER_GAIN else ""
