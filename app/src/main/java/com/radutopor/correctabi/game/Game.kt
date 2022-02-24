@@ -7,6 +7,4 @@ data class Game(
     val coins: String,
     val letters: List<Char?>,
     val definition: SpannableString,
-    val lettersGuessed: String,
-    val letterCost: String,
 )

@@ -23,7 +23,7 @@ class GameController(private val activity: GameActivity) {
 
     suspend fun startGame(path: String, restorePath: String?) {
         val word = wordDao.getWord(path)
-        if (!word.areChildrenCreated) {
+        if (word.revealablesNo == -1) {
             createChildWords(word)
         }
         activity.renderGame(word.toGame())
@@ -39,21 +39,19 @@ class GameController(private val activity: GameActivity) {
         val maxRevealables = layerRes.maxOf { it.indicators.size }
         val toReveal = min(round(revealables.size * layerDifficulties[word.layer]).toInt(), maxRevealables)
         val freebies = revealables.shuffled().take(revealables.size - toReveal)
-        revealables.minus(freebies)
-            .forEachIndexed { index, entry ->
-                val childPath = word.path + (layerRes.getOrNull(word.layer + 1)?.indicators?.get(index) ?: index)
-                wordDao.addWord(entry.toWord(childPath))
-            }
-        wordDao.addWord(word.copy(areChildrenCreated = true))
+        val children = revealables.minus(freebies)
+        children.forEachIndexed { index, entry ->
+            val childPath = word.path + (layerRes.getOrNull(word.layer + 1)?.indicators?.get(index) ?: index)
+            wordDao.addWord(entry.toWord(childPath))
+        }
+        wordDao.addWord(word.copy(revealablesNo = children.size))
     }
 
     private fun Word.toGame() = Game(
         lvlIndicators = path.toList(),
         coins = COINS_STRING.format(getCoins()),
-        letters = stem.map { it.takeIf { lettersGuessed.contains(it) } },
+        letters = stem.map { it.takeIf { freeLetters.contains(it) } },
         definition = createDefinitionSpannable(this),
-        lettersGuessed = lettersGuessed.toList().joinToString(", "),
-        letterCost = COST_STRING.format(revealCost)
     )
 
     private fun createDefinitionSpannable(word: Word): SpannableString {
@@ -61,7 +59,7 @@ class GameController(private val activity: GameActivity) {
         val childrenAndIndex = wordDao.getChildWords(word.path).map { childWord ->
             val token = childWord.token
             val startIndex = definition.indexOf(token)
-            definition = definition.replaceFirst(token, hiddenChar.repeat(token.length))
+            definition = definition.replaceFirst(token, HIDDEN_CHAR.repeat(token.length))
             childWord to startIndex
         }
 
@@ -81,36 +79,20 @@ class GameController(private val activity: GameActivity) {
     }
 
     private fun processChildWordClick(word: Word, childWord: Word) {
-        if (word.layer < sharedPrefs.getLevel() && childWord.isGuessable()) {
-            activity.startNewGame(childWord.path)
-        } else if (spendCoins(word.revealCost)) {
-            deleteWord(childWord)
-            activity.renderGame(word.toGame())
-        }
-    }
-
-    fun guessLetter(path: String, letter: String) {
-        if (letter.isBlank()) return
-        var word = wordDao.getWord(path)
-        if (word.lettersGuessed.contains(letter)) {
-            activity.showMessage(MSG_LETTER_ALREADY_GUESSED)
-        } else if (spendCoins(word.revealCost)) {
-            word = word.copy(lettersGuessed = word.lettersGuessed + letter)
-            wordDao.addWord(word)
-            if (word.lettersGuessed.toList().containsAll(word.stem.toList())) {
-                processGameWon(word)
-            } else {
-                if (!word.stem.contains(letter)) {
-                    activity.showMessage(MSG_WRONG_LETTER_GUESS)
-                }
-                activity.renderGame(word.toGame())
+        if (spendCoins(word.revealCost)) {
+            if (deleteWord(childWord)) {
+                activity.showMessage(LETTER_GAIN)
             }
+            refreshGame(word.path)
+        } else if (word.layer < sharedPrefs.getLevel() && childWord.isGuessable()) {
+            activity.startNewGame(childWord.path)
         }
     }
 
     private fun spendCoins(cost: Int): Boolean {
+        val minSavings = if (cost > 1) cost else 0
         val currentCoins = getCoins()
-        if (cost > currentCoins) {
+        if (currentCoins < cost + minSavings) {
             activity.showMessage(MSG_NOT_ENOUGH_COINS)
             return false
         }
@@ -128,8 +110,9 @@ class GameController(private val activity: GameActivity) {
     }
 
     private fun processGameWon(word: Word) {
-        deleteWord(word)
+        val letterAward = deleteWord(word)
         val coinsGained = word.value
+        val gains = COINS_GAIN_STRING.format(coinsGained) + if (letterAward) "\n" + LETTER_GAIN else ""
         sharedPrefs.setCoins(getCoins() + coinsGained)
         if (word.layer == 0) {
             val level = sharedPrefs.getLevel()
@@ -137,17 +120,31 @@ class GameController(private val activity: GameActivity) {
                 sharedPrefs.wipeEverything()
                 activity.showGameWon()
             } else {
-                activity.showLevelComplete(GAINS_STRING.format(coinsGained), level)
+                activity.showLevelComplete(gains, level)
             }
         } else {
-            activity.showCorrectGuess(GAINS_STRING.format(coinsGained))
+            activity.showCorrectGuess(gains)
         }
     }
 
-    private fun deleteWord(word: Word) {
-        wordDao.getChildWords(word.path.dropLast(1))
+    private fun deleteWord(word: Word): Boolean {
+        val parentPath = word.path.dropLast(1)
+        wordDao.getChildWords(parentPath)
             .filter { it.stem == word.stem } // delete current word + any duplicate kin
             .forEach { wordDao.deleteWordTree(it.path) }
+        return checkAwardParentLetter(parentPath)
+    }
+
+    private fun checkAwardParentLetter(parentPath: String): Boolean {
+        if (parentPath.isEmpty()) return false
+        val parent = wordDao.getWord(parentPath)
+        val revealablesLeftNo = wordDao.getChildWords(parent.path).size
+        val shouldAwardLetter = (parent.revealablesNo - revealablesLeftNo) / AWARD_LETTER_FREQ > parent.freeLetters.length
+        val unrevealedLetters = parent.stem.toList() - parent.freeLetters.toList()
+        return if (shouldAwardLetter && unrevealedLetters.size > 1) {
+            wordDao.addWord(parent.copy(freeLetters = parent.freeLetters + unrevealedLetters.random()))
+            true
+        } else false
     }
 
     fun refreshGame(path: String) {
@@ -157,9 +154,9 @@ class GameController(private val activity: GameActivity) {
 
     fun setCurrentGame(path: String) = sharedPrefs.setPath(path)
 
-    private val Word.layer get() = getLayer(path)
-
     fun getLayer(path: String) = path.length - 1
+
+    private val Word.layer get() = getLayer(path)
 
     private val Word.revealCost get() = revealablesPerLayer.subList(layer, sharedPrefs.getLevel()).plus(1).product()
 
@@ -175,15 +172,15 @@ class GameController(private val activity: GameActivity) {
         val layerDifficulties = layerRes.indices.map { i -> LAYER_DIF_RAMP.pow(i) } // can also specify individually
         val revealablesPerLayer = layerDifficulties.map { round(it * AVG_NO_REVEALABLES).toInt() }
 
+        const val AWARD_LETTER_FREQ = 2
+
         const val COIN_SYMBOL = "₳"
         const val COINS_STRING = "$COIN_SYMBOL%d"
-        const val COST_STRING = "($COIN_SYMBOL-%d)"
-        const val GAINS_STRING = "+ $COIN_SYMBOL%d"
+        const val COINS_GAIN_STRING = "+ $COIN_SYMBOL%d"
+        const val LETTER_GAIN = "+ ✉️"
 
-        const val hiddenChar = "‒"
+        const val HIDDEN_CHAR = "‒"
 
-        const val MSG_WRONG_LETTER_GUESS = "No"
-        const val MSG_LETTER_ALREADY_GUESSED = "Still no"
         const val MSG_NOT_ENOUGH_COINS = "$COIN_SYMBOL \uD83E\uDD0F"
     }
 }

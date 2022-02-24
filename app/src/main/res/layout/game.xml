@@ -28,7 +28,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/light_1"
-                android:textSize="@dimen/text_navbar"
+                android:textSize="@dimen/text"
                 tools:text="1" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -38,7 +38,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/light_2"
-                android:textSize="@dimen/text_navbar"
+                android:textSize="@dimen/text"
                 tools:text="a" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -48,7 +48,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/light_3"
-                android:textSize="@dimen/text_navbar"
+                android:textSize="@dimen/text"
                 tools:text="β" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -58,7 +58,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/light_4"
-                android:textSize="@dimen/text_navbar"
+                android:textSize="@dimen/text"
                 tools:text="ひ" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -68,7 +68,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/light_5"
-                android:textSize="@dimen/text_navbar"
+                android:textSize="@dimen/text"
                 tools:text="☂" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -80,7 +80,7 @@
                 android:paddingTop="12dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="12dp"
-                android:textSize="@dimen/text_navbar"
+                android:textSize="@dimen/text"
                 tools:text="₳84"
                 tools:textColor="@color/light_1" />
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -88,7 +88,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:paddingLeft="@dimen/body_padding_h"
             android:paddingRight="@dimen/body_padding_h">
 
@@ -97,8 +97,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="18dp"
-                android:text="guess "
-                android:textSize="@dimen/text_body"
+                android:text="guess"
+                android:textSize="@dimen/label"
                 app:layout_constraintBottom_toTopOf="@id/word"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -124,7 +124,7 @@
                     android:maxLength="1"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:textSize="@dimen/text_letter"
+                    android:textSize="@dimen/text"
                     tools:backgroundTint="@color/section_1"
                     tools:enabled="false"
                     tools:text="t"
@@ -145,7 +145,7 @@
                     android:maxLength="1"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:textSize="@dimen/text_letter"
+                    android:textSize="@dimen/text"
                     tools:backgroundTint="@color/light_1"
                     tools:text="o"
                     tools:textColor="@color/accent_1" />
@@ -165,7 +165,7 @@
                     android:maxLength="1"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:textSize="@dimen/text_letter"
+                    android:textSize="@dimen/text"
                     tools:backgroundTint="@color/light_1"
                     tools:textColor="@color/accent_1" />
 
@@ -184,7 +184,7 @@
                     android:maxLength="1"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:textSize="@dimen/text_letter"
+                    android:textSize="@dimen/text"
                     tools:backgroundTint="@color/section_1"
                     tools:enabled="false"
                     tools:text="t"
@@ -205,7 +205,7 @@
                     android:maxLength="1"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:textSize="@dimen/text_letter"
+                    android:textSize="@dimen/text"
                     tools:backgroundTint="@color/light_1"
                     tools:textColor="@color/accent_1" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -225,94 +225,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="18dp"
                 android:text="think"
-                android:textSize="@dimen/text_body"
+                android:textSize="@dimen/label"
                 tools:textColor="@color/section_1" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/definition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_body"
+                android:textSize="@dimen/text"
                 tools:text="each of a --- of ----, ---- enamel-coated ---------- in the ---- of most vertebrates, ---- for ------ and -------"
                 tools:textColor="@color/dark_1"
                 tools:textColorHighlight="@color/accent_1" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingLeft="@dimen/body_padding_h"
-            android:paddingRight="@dimen/body_padding_h">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/lettersGuessed"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="18dp"
-                android:gravity="right"
-                android:textSize="@dimen/text_body"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/guess_letter"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="A, T"
-                tools:textColor="@color/section_1" />
-
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/guess_letter"
-                android:layout_width="54dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="18dp"
-                android:background="@drawable/box"
-                android:digits="abcdefghijklmnopqrstuvwxyz"
-                android:gravity="center"
-                android:maxLength="1"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="@dimen/text_letter"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/guess_button"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:backgroundTint="@color/light_1"
-                tools:text="g"
-                tools:textColor="@color/accent_1" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/guess_button"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:background="@drawable/box"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@id/guess_letter"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/guess_letter"
-                tools:backgroundTint="@color/accent_1">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/guess_button_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="letter "
-                    android:textSize="18dp"
-                    tools:textColor="@color/base_1" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/letter_cost"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    tools:text="(₳-15)"
-                    tools:textColor="@color/section_1" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2" />
+            android:layout_weight="1" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ProgressBar
@@ -355,5 +284,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
+        android:focusable="true"
         android:visibility="gone" />
 </FrameLayout>

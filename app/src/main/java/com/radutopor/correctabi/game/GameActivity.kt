@@ -57,22 +57,12 @@ class GameActivity : AppCompatActivity() {
         view.thinkLabel.setTextColor(getColor(colors.section))
         view.definition.setTextColor(getColor(colors.dark))
         view.definition.setLinkTextColor(getColor(colors.accent))
-        view.lettersGuessed.setTextColor(getColor(colors.section))
-        view.guessLetter.backgroundTintList = tint(colors.light)
-        view.guessLetter.setTextColor(getColor(colors.accent))
-        view.guessButton.backgroundTintList = tint(colors.accent)
-        view.guessButtonLabel.setTextColor(getColor(colors.base))
-        view.letterCost.setTextColor(getColor(colors.section))
         view.loading.indeterminateTintList = tint(colors.section)
     }
 
     private fun setStaticListeners() {
         view.definition.movementMethod = LinkMovementMethod.getInstance()
-        view.guessButton.setOnClickListener {
-            it.hideKeyboard()
-            controller.guessLetter(path, view.guessLetter.text.toString())
-            view.guessLetter.text = null
-        }
+        view.root.setOnClickListener { it.hideKeyboard() }
         view.credits.root.setOnClickListener { finish() }
     }
 
@@ -88,8 +78,6 @@ class GameActivity : AppCompatActivity() {
         view.coins.text = game.coins
         addLetters(game)
         view.definition.text = game.definition
-        view.lettersGuessed.text = game.lettersGuessed
-        view.letterCost.text = game.letterCost
     }
 
     private fun setLvlIndicators(game: Game) {
@@ -160,18 +148,18 @@ class GameActivity : AppCompatActivity() {
         runDelayed(DELAY_INCORRECT) { view.incorrect.visibility = View.GONE }
     }
 
-    fun showCorrectGuess(coinsGained: String) {
+    fun showCorrectGuess(gains: String) {
         view.correct.root.visibility = View.VISIBLE
-        view.correct.gains.text = coinsGained
+        view.correct.gains.text = gains
         runDelayed(DELAY_CORRECT) {
             setResult(Activity.RESULT_OK)
             finish()
         }
     }
 
-    fun showLevelComplete(coinsGained: String, level: Int) {
+    fun showLevelComplete(gains: String, level: Int) {
         view.correct.root.visibility = View.VISIBLE
-        view.correct.gains.text = coinsGained
+        view.correct.gains.text = gains
         playFanfare(layerRes[level].fanfare)
         view.correct.root.setOnClickListener {
             startActivity(Intent(this, InputActivity::class.java))

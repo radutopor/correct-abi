@@ -8,7 +8,7 @@ data class Word(
     @PrimaryKey val path: String,
     val token: String,
     val stem: String,
+    val freeLetters: String = "",
     val definition: String,
-    val lettersGuessed: String = "",
-    val areChildrenCreated: Boolean = false
+    val revealablesNo: Int = -1
 )

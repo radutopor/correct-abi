@@ -1,11 +1,12 @@
 package com.radutopor.correctabi
 
 import androidx.annotation.ColorRes
+import androidx.annotation.RawRes
 
 data class LayerRes(
     val indicators: List<Char>,
     val colors: LayerColors,
-    val fanfare: Int
+    @RawRes val fanfare: Int
 )
 
 data class LayerColors(
