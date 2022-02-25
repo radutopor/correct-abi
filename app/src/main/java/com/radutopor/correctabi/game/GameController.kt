@@ -34,7 +34,7 @@ class GameController(private val activity: GameActivity) {
                 val nextChildPath = restorePath.take(path.length + 1)
                 activity.startNewGame(nextChildPath, restorePath)
             }
-        } else if (!word.isLeaf) {
+        } else if (!canAfford(word.revealCost) && !word.isLeaf) {
             wordDao.getChildWords(word.path).randomOrNull()?.let {
                 activity.startNewGame(it.path)
             }
@@ -97,14 +97,17 @@ class GameController(private val activity: GameActivity) {
     }
 
     private fun spendCoins(cost: Int): Boolean {
-        val minSavings = if (cost > 1) cost else 0
-        val currentCoins = getCoins()
-        if (currentCoins < cost + minSavings) {
-            activity.showMessage(MSG_NOT_ENOUGH_COINS)
-            return false
+        if (canAfford(cost)) {
+            sharedPrefs.setCoins(getCoins() - cost)
+            return true
         }
-        sharedPrefs.setCoins(currentCoins - cost)
-        return true
+        activity.showMessage(MSG_NOT_ENOUGH_COINS)
+        return false
+    }
+
+    private fun canAfford(cost: Int): Boolean {
+        val minSavings = if (cost > 1) cost else 0
+        return getCoins() >= cost + minSavings
     }
 
     fun guessWord(path: String, guess: String) {
