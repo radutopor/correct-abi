@@ -29,9 +29,15 @@ class GameController(private val activity: GameActivity) {
         }
         activity.renderGame(word.toGame())
 
-        if (restorePath != null && restorePath != path) {
-            val childGamePath = restorePath.take(path.length + 1)
-            activity.startNewGame(childGamePath, restorePath)
+        if (restorePath != null) {
+            if (restorePath != path) {
+                val nextChildPath = restorePath.take(path.length + 1)
+                activity.startNewGame(nextChildPath, restorePath)
+            }
+        } else if (!word.isLeaf) {
+            wordDao.getChildWords(word.path).randomOrNull()?.let {
+                activity.startNewGame(it.path)
+            }
         }
     }
 
@@ -85,7 +91,7 @@ class GameController(private val activity: GameActivity) {
                 activity.showMessage(LETTER_GAIN)
             }
             refreshGame(word.path)
-        } else if (word.layer < sharedPrefs.getLevel() && childWord.isGuessable()) {
+        } else if (!word.isLeaf && childWord.isGuessable()) {
             activity.startNewGame(childWord.path)
         }
     }
@@ -160,6 +166,8 @@ class GameController(private val activity: GameActivity) {
     fun getLayer(path: String) = path.length - 1
 
     private val Word.layer get() = getLayer(path)
+
+    private val Word.isLeaf get() = layer == sharedPrefs.getLevel()
 
     private val Word.revealCost get() = revealablesPerLayer.subList(layer, sharedPrefs.getLevel()).plus(1).product()
 
