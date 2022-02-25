@@ -22,28 +22,37 @@ class InputActivity : AppCompatActivity() {
 
         setContentView(view.root)
         setListeners()
-        controller.setCurrentlyOnInput()
+
+        showLoading()
+        async { controller.onCreate() }
     }
 
     private fun setListeners() {
-        view.showInput.setOnClickListener {
-            view.prompt.visibility = View.GONE
-            view.input.visibility = View.VISIBLE
-        }
-
+        view.showInput.setOnClickListener { showInput() }
         view.submit.setOnClickListener {
             it.hideKeyboard()
-            view.input.visibility = View.GONE
-            view.loading.visibility = View.VISIBLE
-            async { controller.createRootWord(view.inputWord.text.toString()) }
+            showLoading()
+            async { controller.submitInput(view.inputWord.text.toString()) }
         }
     }
 
-    fun showMessage(message: String) = runOnUiThread {
+    private fun showLoading() {
+        view.prompt.visibility = View.GONE
+        view.input.visibility = View.GONE
+        view.loading.visibility = View.VISIBLE
+    }
+
+    fun showPrompt() = runOnUiThread {
         view.loading.visibility = View.GONE
+        view.prompt.visibility = View.VISIBLE
+    }
+
+    fun showInput(message: String? = null) = runOnUiThread {
+        view.loading.visibility = View.GONE
+        view.prompt.visibility = View.GONE
         view.input.visibility = View.VISIBLE
         view.inputWord.text.clear()
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        message?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
     }
 
     fun startNewGame(path: String) {

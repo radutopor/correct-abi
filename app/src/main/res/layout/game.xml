@@ -255,8 +255,7 @@
                 android:text="letter ✉️"
                 android:textSize="@dimen/label"
                 tools:backgroundTint="@color/accent_1"
-                tools:textColor="@color/base_1"
-                tools:visibility="visible" />
+                tools:textColor="@color/base_1" />
         </FrameLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
