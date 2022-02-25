@@ -3,6 +3,9 @@ package com.radutopor.correctabi
 import com.radutopor.correctabi.dictionaryapi.DictionaryEntry
 import com.radutopor.correctabi.dictionaryapi.merriamwebster.ApiBuilder.dictionaryApi
 import com.radutopor.correctabi.storage.word.Word
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 class GuessablesUtil(private val sharedPrefs: SharedPrefs) {
 
@@ -24,9 +27,11 @@ class GuessablesUtil(private val sharedPrefs: SharedPrefs) {
             }
         } else null
 
-    suspend fun getRevealableDictionaryEntries(definition: String): List<DictionaryEntry> =
+    suspend fun getRevealableDictionaryEntries(definition: String): List<DictionaryEntry> = coroutineScope {
         revealableRegex.findAll(definition).toList().map { it.destructured.component1() }
-            .mapNotNull { getRevealableDictionaryEntry(it) }
+            .map { async { getRevealableDictionaryEntry(it) } }.awaitAll()
+            .filterNotNull()
+    }
 
     companion object {
 
