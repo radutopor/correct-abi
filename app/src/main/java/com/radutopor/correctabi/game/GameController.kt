@@ -59,6 +59,7 @@ class GameController(private val activity: GameActivity) {
         coins = COINS_STRING.format(getCoins()),
         letters = stem.map { it.takeIf { freeLetters.contains(it) } },
         definition = createDefinitionSpannable(this),
+        buyLetterVis = wordDao.getChildWords(path).isEmpty() && unrevealedLetters.size > 1
     )
 
     private fun createDefinitionSpannable(word: Word): SpannableString {
@@ -93,6 +94,14 @@ class GameController(private val activity: GameActivity) {
             refreshGame(word.path)
         } else if (!word.isLeaf && childWord.isGuessable()) {
             activity.startNewGame(childWord.path)
+        }
+    }
+
+    fun buyLetter(path: String) {
+        val word = wordDao.getWord(path)
+        if (spendCoins(word.revealCost)) {
+            addFreeLetter(word)
+            refreshGame(word.path)
         }
     }
 
@@ -152,11 +161,15 @@ class GameController(private val activity: GameActivity) {
         val parent = wordDao.getWord(parentPath)
         val revealablesLeftNo = wordDao.getChildWords(parent.path).size
         val shouldAwardLetter = (parent.revealablesNo - revealablesLeftNo) / AWARD_LETTER_FREQ > parent.freeLetters.length
-        val unrevealedLetters = parent.stem.toList() - parent.freeLetters.toList()
-        return if (shouldAwardLetter && unrevealedLetters.size > 1) {
-            wordDao.addWord(parent.copy(freeLetters = parent.freeLetters + unrevealedLetters.random()))
+        return if (shouldAwardLetter && parent.unrevealedLetters.size > 1) {
+            addFreeLetter(parent)
             true
         } else false
+    }
+
+    private fun addFreeLetter(word: Word) {
+        val newFreeLetters = word.freeLetters + word.unrevealedLetters.random()
+        wordDao.addWord(word.copy(freeLetters = newFreeLetters))
     }
 
     fun refreshGame(path: String) {
@@ -171,6 +184,8 @@ class GameController(private val activity: GameActivity) {
     private val Word.layer get() = getLayer(path)
 
     private val Word.isLeaf get() = layer == sharedPrefs.getLevel()
+
+    private val Word.unrevealedLetters get() = stem.toList() - freeLetters.toList()
 
     private val Word.revealCost get() = revealablesPerLayer.subList(layer, sharedPrefs.getLevel()).plus(1).product()
 

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
     <dimen name="body_padding_h">22dp</dimen>
+    <dimen name="body_padding_v">18dp</dimen>
 
     <dimen name="text">24sp</dimen>
     <dimen name="label">20sp</dimen>

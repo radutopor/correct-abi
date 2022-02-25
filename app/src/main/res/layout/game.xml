@@ -96,7 +96,7 @@
                 android:id="@+id/guess_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="@dimen/body_padding_v"
                 android:text="guess"
                 android:textSize="@dimen/label"
                 app:layout_constraintBottom_toTopOf="@id/word"
@@ -223,7 +223,7 @@
                 android:id="@+id/thinkLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="@dimen/body_padding_v"
                 android:text="think"
                 android:textSize="@dimen/label"
                 tools:textColor="@color/section_1" />
@@ -238,10 +238,26 @@
                 tools:textColorHighlight="@color/accent_1" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <Space
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/body_padding_h">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/letter"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:background="@drawable/box"
+                android:text="letter ✉️"
+                android:textSize="@dimen/label"
+                tools:backgroundTint="@color/accent_1"
+                tools:textColor="@color/base_1"
+                tools:visibility="visible" />
+        </FrameLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ProgressBar

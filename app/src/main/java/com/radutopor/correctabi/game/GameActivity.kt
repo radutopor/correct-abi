@@ -57,12 +57,15 @@ class GameActivity : AppCompatActivity() {
         view.thinkLabel.setTextColor(getColor(colors.section))
         view.definition.setTextColor(getColor(colors.dark))
         view.definition.setLinkTextColor(getColor(colors.accent))
+        view.letter.backgroundTintList = tint(colors.accent)
+        view.letter.setTextColor(getColor(colors.base))
         view.loading.indeterminateTintList = tint(colors.section)
     }
 
     private fun setStaticListeners() {
         view.definition.movementMethod = LinkMovementMethod.getInstance()
         view.root.setOnClickListener { it.hideKeyboard() }
+        view.letter.setOnClickListener { controller.buyLetter(path) }
         view.credits.root.setOnClickListener { finish() }
     }
 
@@ -78,6 +81,7 @@ class GameActivity : AppCompatActivity() {
         view.coins.text = game.coins
         addLetters(game)
         view.definition.text = game.definition
+        view.letter.visibility = if (game.buyLetterVis) View.VISIBLE else View.GONE
     }
 
     private fun setLvlIndicators(game: Game) {
