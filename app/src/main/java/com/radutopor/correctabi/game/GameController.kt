@@ -99,7 +99,8 @@ class GameController(private val activity: GameActivity) {
 
     fun buyLetter(path: String) {
         val word = wordDao.getWord(path)
-        if (spendCoins(word.revealCost) && addFreeLetter(word)) {
+        if (spendCoins(word.revealCost)) {
+            addFreeLetter(word)
             refreshGame(word.path)
         }
     }
@@ -160,16 +161,15 @@ class GameController(private val activity: GameActivity) {
         val parent = wordDao.getWord(parentPath)
         val revealablesLeftNo = wordDao.getChildWords(parent.path).size
         val shouldAwardLetter = (parent.revealablesNo - revealablesLeftNo) / AWARD_LETTER_FREQ > parent.freeLetters.length
-        return (shouldAwardLetter && addFreeLetter(parent))
-    }
-
-    private fun addFreeLetter(word: Word): Boolean {
-        val unrevealedLetters = word.unrevealedLetters
-        return if (unrevealedLetters.size > 1) {
-            val newFreeLetters = word.freeLetters + unrevealedLetters.random()
-            wordDao.addWord(word.copy(freeLetters = newFreeLetters))
+        return if (shouldAwardLetter && parent.unrevealedLetters.size > 1) {
+            addFreeLetter(parent)
             true
         } else false
+    }
+
+    private fun addFreeLetter(word: Word) {
+        val newFreeLetters = word.freeLetters + word.unrevealedLetters.random()
+        wordDao.addWord(word.copy(freeLetters = newFreeLetters))
     }
 
     fun refreshGame(path: String) {
