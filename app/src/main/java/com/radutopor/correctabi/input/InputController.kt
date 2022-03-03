@@ -15,8 +15,10 @@ class InputController(private val activity: InputActivity) {
 
     suspend fun onCreate() {
         sharedPrefs.setPath(null)
-        val webWord = inputWebApi.getInput().word
-        if (!tryStartWithInput(webWord)) {
+        try {
+            val webWord = inputWebApi.getInput().word
+            if (!tryStartWithInput(webWord)) throw Exception()
+        } catch (e: Exception) {
             activity.showPrompt()
         }
     }

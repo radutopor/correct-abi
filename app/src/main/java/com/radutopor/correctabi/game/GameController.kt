@@ -110,7 +110,7 @@ class GameController(private val activity: GameActivity) {
             sharedPrefs.setCoins(getCoins() - cost)
             return true
         }
-        activity.showMessage(MSG_NOT_ENOUGH_COINS)
+        activity.showMessage(NOT_ENOUGH_COINS)
         return false
     }
 
@@ -124,7 +124,7 @@ class GameController(private val activity: GameActivity) {
         if (guess == word.stem) {
             processGameWon(word)
         } else {
-            activity.showWrongGuess()
+            activity.showWrongGuess(GUESS_STRING.format(guess))
         }
     }
 
@@ -135,16 +135,17 @@ class GameController(private val activity: GameActivity) {
         val coinsGained = word.value
         val gains = COINS_GAIN_STRING.format(coinsGained) + if (letterAward) "\n" + LETTER_GAIN else ""
         sharedPrefs.setCoins(getCoins() + coinsGained)
+        val guess = GUESS_STRING.format(word.stem)
         if (word.layer == 0) {
             val level = sharedPrefs.getLevel()
             if (level == layerRes.size - 1) {
                 sharedPrefs.wipeEverything()
                 activity.showGameWon()
             } else {
-                activity.showLevelComplete(gains, level)
+                activity.showLevelComplete(level, guess, gains)
             }
         } else {
-            activity.showCorrectGuess(gains)
+            activity.showCorrectGuess(guess, gains)
         }
     }
 
@@ -207,9 +208,8 @@ class GameController(private val activity: GameActivity) {
         const val COINS_STRING = "$COIN_SYMBOL%d"
         const val COINS_GAIN_STRING = "+ $COIN_SYMBOL%d"
         const val LETTER_GAIN = "+ ✉️"
-
         const val HIDDEN_CHAR = "‒"
-
-        const val MSG_NOT_ENOUGH_COINS = "$COIN_SYMBOL \uD83E\uDD0F"
+        const val NOT_ENOUGH_COINS = "$COIN_SYMBOL \uD83E\uDD0F"
+        const val GUESS_STRING = "%s is"
     }
 }

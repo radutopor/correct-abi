@@ -23,7 +23,7 @@ class SharedPrefs(private val context: Context) {
 
     fun isWordGuessed(word: String) = sharedPrefs.getBoolean(word, false)
 
-    fun wipeEverything() = context.deleteSharedPreferences(KEY_SHARED_PREFS)
+    fun wipeEverything() = set { clear() }
 
     private fun set(setter: Editor.() -> Editor) = sharedPrefs.edit().setter().apply()
 

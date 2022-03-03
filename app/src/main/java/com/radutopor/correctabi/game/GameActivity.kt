@@ -15,7 +15,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.ColorRes
-import androidx.annotation.RawRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
@@ -144,27 +143,31 @@ class GameActivity : AppCompatActivity() {
     fun showMessage(message: String) =
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
-    fun showWrongGuess() {
+    fun showWrongGuess(guess: String) {
         val letters = getLetterViews()
         letters.filter { it.isEnabled }.forEach { it.text = null }
         letters.first().requestFocus()
-        view.incorrect.visibility = View.VISIBLE
-        runDelayed(DELAY_INCORRECT) { view.incorrect.visibility = View.GONE }
+        view.incorrect.guess.text = guess
+        view.incorrect.root.visibility = View.VISIBLE
+        runDelayed(DELAY_INCORRECT) { view.incorrect.root.visibility = View.GONE }
     }
 
-    fun showCorrectGuess(gains: String) {
-        view.correct.root.visibility = View.VISIBLE
-        view.correct.gains.text = gains
+    fun showCorrectGuess(guess: String, gains: String) {
+        populateCorrectGuess(guess, gains)
         runDelayed(DELAY_CORRECT) {
             setResult(Activity.RESULT_OK)
             finish()
         }
     }
 
-    fun showLevelComplete(gains: String, level: Int) {
-        view.correct.root.visibility = View.VISIBLE
+    private fun populateCorrectGuess(guess: String, gains: String) {
+        view.correct.guess.text = guess
         view.correct.gains.text = gains
-        playFanfare(layerRes[level].fanfare)
+        view.correct.root.visibility = View.VISIBLE
+    }
+
+    fun showLevelComplete(level: Int, guess: String, gains: String) {
+        populateLevelComplete(level, guess, gains)
         view.correct.root.setOnClickListener {
             startActivity(Intent(this, InputActivity::class.java))
             finish()
@@ -172,8 +175,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     fun showGameWon() {
-        view.correct.root.visibility = View.VISIBLE
-        playFanfare(layerRes.last().fanfare)
+        populateLevelComplete(layerRes.size - 1)
         view.correct.root.setOnClickListener {
             view.credits.root.visibility = View.VISIBLE
         }
@@ -181,9 +183,10 @@ class GameActivity : AppCompatActivity() {
 
     private var mediaPlayer: MediaPlayer? = null
 
-    private fun playFanfare(@RawRes fanfareRes: Int) {
+    private fun populateLevelComplete(level: Int, guess: String = "", gains: String = "") {
+        populateCorrectGuess(guess, gains)
         view.correct.fanfare.visibility = View.VISIBLE
-        mediaPlayer = MediaPlayer.create(this, fanfareRes)
+        mediaPlayer = MediaPlayer.create(this, layerRes[level].fanfare)
         mediaPlayer?.isLooping = true
         mediaPlayer?.start()
     }

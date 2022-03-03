@@ -54,10 +54,10 @@ class GuessablesUtil(private val sharedPrefs: SharedPrefs) {
         private val lengthyWordBlacklist = listOf(
             "the", "and", "not", "but", "for", "with", "without", "etc", "unless",
             // pronouns
-            "they", "them", "theirs", "themselves", "itself", "anybody", "anyone", "anything", "everybody",
-            "everyone", "everything", "nobody", "one", "others", "somebody", "someone", "something", "that", "these",
-            "this", "those", "what", "whatever", "whichever", "who", "whoever", "whom", "whomever", "whosoever", "you",
-            "yours", "yourself", "yourselves", "he", "him", "himself", "his", "she", "her", "hers", "herself", "your"
+            "they", "them", "theirs", "themselves", "itself", "anybody", "anyone", "anything", "everybody", "everyone", "everything",
+            "nobody", "one", "others", "somebody", "someone", "something", "that", "these", "this", "those", "what", "whatever",
+            "whichever", "who", "whoever", "whom", "whomever", "whosoever", "you", "yours", "yourself", "yourselves", "he", "him",
+            "himself", "his", "she", "her", "hers", "herself", "your", "its"
         )
     }
 }

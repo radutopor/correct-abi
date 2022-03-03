@@ -268,16 +268,11 @@
         tools:indeterminateTint="@color/section_1"
         tools:visibility="gone" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <include
         android:id="@+id/incorrect"
+        layout="@layout/incorrect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F44336"
-        android:gravity="center"
-        android:paddingBottom="48dp"
-        android:text="Incorrect, Abi"
-        android:textColor="#262626"
-        android:textSize="48sp"
         android:visibility="gone" />
 
     <include
