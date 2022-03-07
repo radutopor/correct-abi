@@ -12,6 +12,7 @@ import com.radutopor.correctabi.SharedPrefs
 import com.radutopor.correctabi.layerRes
 import com.radutopor.correctabi.storage.Storage.getWordDao
 import com.radutopor.correctabi.storage.word.Word
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.round
@@ -161,7 +162,8 @@ class GameController(private val activity: GameActivity) {
         if (parentPath.isEmpty()) return false
         val parent = wordDao.getWord(parentPath)
         val revealablesLeftNo = wordDao.getChildWords(parent.path).size
-        val shouldAwardLetter = (parent.revealablesNo - revealablesLeftNo) / AWARD_LETTER_FREQ > parent.freeLetters.length
+        val awardLetterFreq = max(2, round(parent.revealablesNo / (parent.stem.length - 1f)).toInt())
+        val shouldAwardLetter = (parent.revealablesNo - revealablesLeftNo) / awardLetterFreq > parent.freeLetters.length
         return if (shouldAwardLetter && parent.unrevealedLetters.size > 1) {
             addFreeLetter(parent)
             true
@@ -201,8 +203,6 @@ class GameController(private val activity: GameActivity) {
         const val LAYER_DIF_RAMP = 1.00
         val layerDifficulties = layerRes.indices.map { i -> LAYER_DIF_RAMP.pow(i) } // can also specify individually
         val revealablesPerLayer = layerDifficulties.map { round(it * AVG_NO_REVEALABLES).toInt() }
-
-        const val AWARD_LETTER_FREQ = 2
 
         const val COIN_SYMBOL = "₳"
         const val COINS_STRING = "$COIN_SYMBOL%d"
