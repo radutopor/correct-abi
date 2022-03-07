@@ -162,7 +162,7 @@ class GameController(private val activity: GameActivity) {
         if (parentPath.isEmpty()) return false
         val parent = wordDao.getWord(parentPath)
         val revealablesLeftNo = wordDao.getChildWords(parent.path).size
-        val awardLetterFreq = max(2, round(parent.revealablesNo / (parent.stem.length - 1f)).toInt())
+        val awardLetterFreq = max(2, round(parent.revealablesNo / (parent.stem.toList().distinct().size - 1f)).toInt())
         val shouldAwardLetter = (parent.revealablesNo - revealablesLeftNo) / awardLetterFreq > parent.freeLetters.length
         return if (shouldAwardLetter && parent.unrevealedLetters.size > 1) {
             addFreeLetter(parent)
